@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f5e8d3">
+<title>Project 16 · The Birthday Quest</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="grain"></div>
+<header class="bar"><div class="brand">✦ PROJECT 16</div><div class="bar-right"><span>16 NOVEMBER 2026</span><b>✥</b></div></header>
+<main>
+<section class="hero">
+  <div class="hero-copy">
+    <p class="kicker">A QUEST MADE FOR ONE VERY SPECIAL EXPLORER</p>
+    <h1>The Birthday<br><em>Quest</em></h1>
+    <p class="hello">Welcome, <strong>Yashitae</strong>.</p>
+    <p class="intro">A mysterious map. Five curious realms. A trail of little secrets. Your birthday adventure starts here.</p>
+    <button class="primary" id="begin">Open your map <span>↗</span></button>
+    <p class="tiny">Your adventure is best explored one chapter at a time.</p>
+  </div>
+  <div class="hero-art">
+    <img src="images/art/storybook-map.png" alt="Illustrated storybook treasure map" onerror="this.style.display='none'">
+    <div class="art-fallback"><span>✧</span><strong>A MAP OF<br>FIVE REALMS</strong><small>Follow the stars. Find the treasure.</small></div>
+    <div class="map-stamp">Y<br><small>16</small></div>
+  </div>
+</section>
+
+<section class="map-section" id="map">
+  <div class="section-top"><div><p class="kicker">YOUR ADVENTURE MAP</p><h2>Choose your next destination</h2></div><div class="progress"><span id="progressText">0 / 5 treasures</span><div class="track"><i id="progressFill"></i></div></div></div>
+  <div class="map-layout">
+    <div class="realm-list">
+      <button class="realm" data-id="court"><span class="realm-emoji">🏀</span><span><small>CHAPTER I · 8:30 AM</small><b>The Enchanted Court</b><em id="status-court">Waiting to open</em></span><span class="realm-arrow">↗</span></button>
+      <button class="realm" data-id="ocean"><span class="realm-emoji">🐚</span><span><small>CHAPTER II · 11:30 AM</small><b>The Sunken Kingdom</b><em id="status-ocean">Waiting to open</em></span><span class="realm-arrow">↗</span></button>
+      <button class="realm" data-id="archives"><span class="realm-emoji">📜</span><span><small>CHAPTER III · 2:30 PM</small><b>The Lost Archives</b><em id="status-archives">Waiting to open</em></span><span class="realm-arrow">↗</span></button>
+      <button class="realm" data-id="carnival"><span class="realm-emoji">🎪</span><span><small>CHAPTER IV · 3:30 PM</small><b>The Carnival of Curiosities</b><em id="status-carnival">Waiting to open</em></span><span class="realm-arrow">↗</span></button>
+      <button class="realm" data-id="vault"><span class="realm-emoji">🏰</span><span><small>CHAPTER V · 8:00 PM</small><b>The Birthday Vault</b><em id="status-vault">Waiting to open</em></span><span class="realm-arrow">↗</span></button>
+    </div>
+    <aside class="inventory">
+      <p class="kicker">THE EXPLORER'S SATCHEL</p><h3>Your treasures</h3>
+      <div class="tokens"><span id="token-court">🏀</span><span id="token-ocean">🐚</span><span id="token-archives">📜</span><span id="token-carnival">🎟️</span><span id="token-vault">👑</span></div>
+      <p>Every completed chapter leaves a little treasure in your satchel.</p>
+      <div class="note"><b>✧ A note from your mapmaker</b><p>There is no rush, explorer. If you need a break, your map will remember where you left off.</p></div>
+    </aside>
+  </div>
+</section>
+<section class="footer-card"><span>✧</span><div><p class="kicker">THE FINAL DESTINATION</p><h2>Five realms. One unforgettable day.</h2><p>Follow the clues, collect the treasures, and see what waits at the end of the map.</p></div></section>
+<footer>Made with a little mischief and a lot of affection · <b>Project 16</b></footer>
+</main>
+
+<div class="modal" id="modal" aria-hidden="true"><div class="dialog">
+<button class="x" id="close" aria-label="Close">×</button><p class="kicker" id="modalKicker">CHAPTER</p><div class="modal-emoji" id="modalEmoji">✦</div><h2 id="modalTitle">A new adventure</h2><p class="modal-sub" id="modalSub"></p><div id="gameArea"></div><p class="modal-feedback" id="feedback"></p><button class="primary" id="continue" hidden>Collect treasure</button>
+</div></div>
+<div class="toast" id="toast"></div>
+<div class="preview" id="preview">TEST MODE · chapters open for testing. Remove ?preview=1 before publishing.</div>
+<script src="script.js"></script>
+</body></html>

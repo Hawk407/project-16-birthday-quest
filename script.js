@@ -1,3 +1,5 @@
+const KEY='project16-yashitae-v2';
+if(new URLSearchParams(location.search).get('reset')==='1')localStorage.removeItem(KEY);
 const PREVIEW=new URLSearchParams(location.search).get('preview')==='1';
 const KEY='project16-yashitae-v2';
 const chapters={court:{title:'The Enchanted Court',icon:'🏀',time:'8:30 AM',hour:8,min:30},ocean:{title:'The Sunken Kingdom',icon:'🐚',time:'11:30 AM',hour:11,min:30},archives:{title:'The Lost Archives',icon:'📜',time:'2:30 PM',hour:14,min:30},carnival:{title:'The Carnival of Curiosities',icon:'🎪',time:'3:30 PM',hour:15,min:30},vault:{title:'The Birthday Vault',icon:'🏰',time:'8:00 PM',hour:20,min:0}};

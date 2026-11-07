@@ -17,7 +17,132 @@ function stopGame(){if(raf)cancelAnimationFrame(raf);raf=null}
 function finish(m){document.getElementById('feedback').textContent=m;document.getElementById('continue').hidden=false}
 function courtGame(area){
 area.innerHTML=`
-<p class="game-copy">Three baskets will make you the legend of the Enchanted Court. You have five attempts. Drag the ball backwards to aim and set your power, then release!</p>
+<p class="game-copy">Welcome to the Enchanted Court! Drag the ball backwards to choose your shot. Follow the glowing guide and send it through the hoop. Three baskets will win you the treasure!</p>
+<canvas id="courtCanvas" class="play-canvas" width="340" height="300"></canvas>
+<div class="score" id="courtScore">Shots: 0/5 · Baskets: 0</div>
+<p class="feedback" id="courtHint">Drag the ball backwards and release. Your trajectory guide will show the way!</p>
+<button class="game-btn" id="resetShot">Reset ball</button>`;
+
+let canvas=document.getElementById('courtCanvas');
+let ctx=canvas.getContext('2d');
+
+let ball={x:65,y:245,vx:0,vy:0,r:13};
+let shots=0,baskets=0,drag=false,aim=null,moving=false;
+let hoop={x:270,y:105,w:43};
+let scored=false;
+const gravity=.38;
+const targetX=290;
+const targetY=105;
+
+function shotVelocity(){
+let pull=aim?Math.hypot(ball.x-aim.x,ball.y-aim.y):55;
+let vx=Math.max(5.5,Math.min(9,5.5+pull*.025));
+let flight=(targetX-ball.x)/vx;
+let vy=(targetY-ball.y-.5*gravity*flight*flight)/flight;
+return{vx,vy};
+}
+
+function draw(){
+ctx.clearRect(0,0,340,300);
+
+let sky=ctx.createLinearGradient(0,0,0,300);
+sky.addColorStop(0,'#dce9e8');
+sky.addColorStop(1,'#f5e7ce');
+ctx.fillStyle=sky;
+ctx.fillRect(0,0,340,300);
+
+ctx.fillStyle='#d3b18a';
+ctx.fillRect(0,260,340,40);
+
+ctx.strokeStyle='#fff8e8';
+ctx.lineWidth=2;
+ctx.beginPath();
+ctx.moveTo(0,260);
+ctx.lineTo(340,260);
+ctx.stroke();
+
+// Basket support
+ctx.fillStyle='#9d7856';
+ctx.fillRect(290,65,8,110);
+
+ctx.fillStyle='#fff3dc';
+ctx.fillRect(254,65,42,5);
+
+// Backboard and hoop
+ctx.strokeStyle='#a55d45';
+ctx.lineWidth=4;
+ctx.beginPath();
+ctx.moveTo(270,105);
+ctx.lineTo(310,105);
+ctx.stroke();
+
+ctx.strokeStyle='#b47c5c';
+ctx.lineWidth=1.5;
+ctx.beginPath();
+ctx.moveTo(273,106);
+ctx.lineTo(278,135);
+ctx.lineTo(302,135);
+ctx.lineTo(307,106);
+ctx.stroke();
+
+// Full trajectory guide
+if(!moving){
+let v=shotVelocity();
+let flight=(targetX-ball.x)/v.vx;
+
+ctx.setLineDash([3,5]);
+ctx.lineWidth=2;
+ctx.strokeStyle='#fff9e7';
+
+ctx.beginPath();
+
+for(let t=0;t<=flight;t+=.6){
+let x=ball.x+v.vx*t;
+let y=ball.y+v.vy*t+.5*gravity*t*t;
+
+if(t===0)ctx.moveTo(x,y);
+else ctx.lineTo(x,y);
+}
+
+ctx.stroke();
+ctx.setLineDash([]);
+
+// Basket alignment guide
+ctx.strokeStyle='#d39b59';
+ctx.lineWidth=1.5;
+ctx.setLineDash([5,4]);
+ctx.beginPath();
+ctx.moveTo(245,targetY);
+ctx.lineTo(325,targetY);
+ctx.stroke();
+ctx.setLineDash([]);
+
+// Target marker
+ctx.beginPath();
+ctx.arc(targetX,targetY,7,0,Math.PI*2);
+ctx.strokeStyle='#d39b59';
+ctx.lineWidth=1.5;
+ctx.stroke();
+}
+
+// Basketball
+ctx.fillStyle='#d87932';
+ctx.beginPath();
+ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);
+ctx.fill();
+
+ctx.strokeStyle='#633c2b';
+ctx.lineWidth=1.5;
+ctx.stroke();
+
+ctx.beginPath();
+ctx.moveTo(ball.x-12,ball.y);
+ctx.lineTo(ball.x+12,ball.y);
+ctx.moveTo(ball.x,ball.y-12);
+ctx.lineTo(ball.x,ball.y+12);
+ctx.stroke();
+}
+Three baskets will make you the legend of the Enchanted Court. You have five attempts. Drag the ball backwards to aim and set your power, then release!</p>
 <canvas id="courtCanvas" class="play-canvas" width="340" height="300"></canvas>
 <div class="score" id="courtScore">Shots: 0/5 · Baskets: 0</div>
 <p class="feedback" id="courtHint">Drag the basketball backwards and release to shoot.</p>

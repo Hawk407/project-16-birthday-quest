@@ -28,7 +28,6 @@ let ctx=canvas.getContext('2d');
 
 let ball={x:65,y:245,vx:0,vy:0,r:13};
 let shots=0,baskets=0,drag=false,aim=null,moving=false;
-let hoop={x:270,y:105,w:43};
 let scored=false;
 const gravity=.38;
 const targetX=290;
@@ -68,7 +67,7 @@ ctx.fillRect(290,65,8,110);
 ctx.fillStyle='#fff3dc';
 ctx.fillRect(254,65,42,5);
 
-// Backboard and hoop
+// Hoop
 ctx.strokeStyle='#a55d45';
 ctx.lineWidth=4;
 ctx.beginPath();
@@ -93,7 +92,6 @@ let flight=(targetX-ball.x)/v.vx;
 ctx.setLineDash([3,5]);
 ctx.lineWidth=2;
 ctx.strokeStyle='#fff9e7';
-
 ctx.beginPath();
 
 for(let t=0;t<=flight;t+=.6){
@@ -107,7 +105,7 @@ else ctx.lineTo(x,y);
 ctx.stroke();
 ctx.setLineDash([]);
 
-// Basket alignment guide
+// Basket alignment
 ctx.strokeStyle='#d39b59';
 ctx.lineWidth=1.5;
 ctx.setLineDash([5,4]);
@@ -117,7 +115,6 @@ ctx.lineTo(325,targetY);
 ctx.stroke();
 ctx.setLineDash([]);
 
-// Target marker
 ctx.beginPath();
 ctx.arc(targetX,targetY,7,0,Math.PI*2);
 ctx.strokeStyle='#d39b59';
@@ -142,35 +139,114 @@ ctx.moveTo(ball.x,ball.y-12);
 ctx.lineTo(ball.x,ball.y+12);
 ctx.stroke();
 }
-Three baskets will make you the legend of the Enchanted Court. You have five attempts. Drag the ball backwards to aim and set your power, then release!</p>
-<canvas id="courtCanvas" class="play-canvas" width="340" height="300"></canvas>
-<div class="score" id="courtScore">Shots: 0/5 · Baskets: 0</div>
-<p class="feedback" id="courtHint">Drag the basketball backwards and release to shoot.</p>
-<button class="game-btn" id="resetShot">Reset ball</button>`;
-let canvas=document.getElementById('courtCanvas'),ctx=canvas.getContext('2d');
-let ball={x:65,y:245,vx:0,vy:0,r:13},shots=0,baskets=0,drag=false,aim=null,moving=false;
-let hoop={x:270,y:105,w:43},scored=false;
-function draw(){
-ctx.clearRect(0,0,340,300);
-let sky=ctx.createLinearGradient(0,0,0,300);sky.addColorStop(0,'#dce9e8');sky.addColorStop(1,'#f5e7ce');ctx.fillStyle=sky;ctx.fillRect(0,0,340,300);
-ctx.fillStyle='#d3b18a';ctx.fillRect(0,260,340,40);
-ctx.strokeStyle='#fff8e8';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(0,260);ctx.lineTo(340,260);ctx.stroke();
-ctx.fillStyle='#9d7856';ctx.fillRect(290,65,8,110);ctx.fillStyle='#fff3dc';ctx.fillRect(254,65,42,5);
-ctx.strokeStyle='#a55d45';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(270,105);ctx.lineTo(310,105);ctx.stroke();
-ctx.strokeStyle='#b47c5c';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(273,106);ctx.lineTo(278,135);ctx.lineTo(302,135);ctx.lineTo(307,106);ctx.stroke();
-ctx.fillStyle='#d87932';ctx.beginPath();ctx.arc(ball.x,ball.y,ball.r,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#633c2b';ctx.lineWidth=1.5;ctx.stroke();ctx.beginPath();ctx.moveTo(ball.x-12,ball.y);ctx.lineTo(ball.x+12,ball.y);ctx.moveTo(ball.x,ball.y-12);ctx.lineTo(ball.x,ball.y+12);ctx.stroke();
-if(aim&&!moving){ctx.strokeStyle='#8c6950';ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(ball.x,ball.y);ctx.lineTo(ball.x+(ball.x-aim.x)*.5,ball.y+(ball.y-aim.y)*.5);ctx.stroke();ctx.setLineDash([])}
+
+function pointer(e){
+let r=canvas.getBoundingClientRect();
+return{
+x:(e.clientX-r.left)*340/r.width,
+y:(e.clientY-r.top)*300/r.height
+};
 }
-function pointer(e){let r=canvas.getBoundingClientRect();return{x:(e.clientX-r.left)*340/r.width,y:(e.clientY-r.top)*300/r.height}}
-function start(e){if(moving||shots>=5)return;let p=pointer(e);if(Math.hypot(p.x-ball.x,p.y-ball.y)<35){drag=true;aim=p;canvas.setPointerCapture(e.pointerId)}}
-function move(e){if(drag){aim=pointer(e);draw()}}
-function release(e){if(!drag)return;drag=false;let p=pointer(e),dx=ball.x-p.x,dy=ball.y-p.y;let power=Math.min(18,Math.hypot(dx,dy)*.13);if(power<2){aim=null;draw();return}shots++;scored=false;moving=true;ball.vx=Math.max(3,Math.min(15,dx*.12));ball.vy=Math.max(-17,Math.min(-4,dy*.12));document.getElementById('courtScore').textContent=`Shots: ${shots}/5 · Baskets: ${baskets}`;aim=null;animate()}
-function animate(){if(!moving)return;ball.x+=ball.vx;ball.y+=ball.vy;ball.vy+=.38;
-if(!scored&&ball.vx>0&&ball.x>hoop.x&&ball.x<hoop.x+hoop.w&&ball.y>hoop.y-7&&ball.y<hoop.y+15){baskets++;scored=true}
-if(ball.y>247||ball.x>335||ball.x<5){moving=false;document.getElementById('courtScore').textContent=`Shots: ${shots}/5 · Baskets: ${baskets}`;if(baskets>=3){finish('🏀 Swish! You conquered the Enchanted Court!');return}if(shots>=5){finish('A valiant effort! You gave it your best shot.');return}ball={x:65,y:245,vx:0,vy:0,r:13};document.getElementById('courtHint').textContent='Next shot! Adjust your aim and try again.';draw();return}
-draw();raf=requestAnimationFrame(animate)}
-canvas.addEventListener('pointerdown',start);canvas.addEventListener('pointermove',move);canvas.addEventListener('pointerup',release);canvas.addEventListener('pointercancel',release);
-document.getElementById('resetShot').onclick=()=>{if(!moving){ball={x:65,y:245,vx:0,vy:0,r:13};draw()}};
+
+function start(e){
+if(moving||shots>=5)return;
+
+let p=pointer(e);
+
+if(Math.hypot(p.x-ball.x,p.y-ball.y)<35){
+drag=true;
+aim=p;
+canvas.setPointerCapture(e.pointerId);
+draw();
+}
+}
+
+function move(e){
+if(drag){
+aim=pointer(e);
+draw();
+}
+}
+
+function release(e){
+if(!drag)return;
+
+drag=false;
+aim=pointer(e);
+
+shots++;
+scored=false;
+moving=true;
+
+let v=shotVelocity();
+ball.vx=v.vx;
+ball.vy=v.vy;
+
+document.getElementById('courtScore').textContent=
+`Shots: ${shots}/5 · Baskets: ${baskets}`;
+
+aim=null;
+animate();
+}
+
+function animate(){
+if(!moving)return;
+
+let previousX=ball.x;
+
+ball.x+=ball.vx;
+ball.y+=ball.vy;
+ball.vy+=gravity;
+
+if(!scored&&previousX<targetX&&ball.x>=targetX){
+if(Math.abs(ball.y-targetY)<18){
+baskets++;
+scored=true;
+}
+}
+
+if(ball.y>270||ball.x>335){
+moving=false;
+
+document.getElementById('courtScore').textContent=
+`Shots: ${shots}/5 · Baskets: ${baskets}`;
+
+if(baskets>=3){
+finish('🏀 SWISH! You conquered the Enchanted Court!');
+return;
+}
+
+if(shots>=5){
+finish('🏀 What a game! The Enchanted Court celebrates its champion!');
+return;
+}
+
+ball={x:65,y:245,vx:0,vy:0,r:13};
+
+document.getElementById('courtHint').textContent=
+'Another shot! Follow the glowing trajectory and enjoy the game.';
+
+draw();
+return;
+}
+
+draw();
+raf=requestAnimationFrame(animate);
+}
+
+canvas.addEventListener('pointerdown',start);
+canvas.addEventListener('pointermove',move);
+canvas.addEventListener('pointerup',release);
+canvas.addEventListener('pointercancel',release);
+
+document.getElementById('resetShot').onclick=()=>{
+if(!moving){
+ball={x:65,y:245,vx:0,vy:0,r:13};
+aim=null;
+draw();
+}
+};
+
 draw();
 }
 function oceanGame(area){

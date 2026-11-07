@@ -90,8 +90,71 @@ const memories=[
 {q:'What made that birthday surprise especially memorable?',a:['The first hug you initiated','The cake flavour','The music','The decorations'],c:0,why:'It was the first hug you initiated, and you recorded my reaction.'}
 ];
 function quiz(area,list,title){
-let i=0,score=0;area.innerHTML=`<p class="game-copy">${title}</p><div class="game-box"><div class="score" id="quizCount"></div><div class="question" id="quizQuestion"></div><div id="quizOptions"></div><p class="feedback" id="quizFeedback"></p></div>`;
-function show(){let q=list[i];document.getElementById('quizCount').textContent=`MEMORY ${i+1} OF ${list.length}`;document.getElementById('quizQuestion').textContent=q.q;document.getElementById('quizFeedback').textContent='';let box=document.getElementById('quizOptions');box.innerHTML='';q.a.forEach((v,n)=>{let b=document.createElement('button');b.className='game-btn';b.textContent=v;b.onclick=()=>{if(box.dataset.answered)return;box.dataset.answered='1';if(n===q.c){score++;document.getElementById('quizFeedback').textContent='✓ '+q.why}else document.getElementById('quizFeedback').textContent='Not quite! '+q.why;let next=document.createElement('button');next.className='primary';next.textContent=i===list.length-1?'Finish':'Next memory';next.onclick=()=>{i++;if(i<list.length)show();else{area.innerHTML=`<h3>Memory keeper</h3><p class="game-copy">You remembered ${score} out of ${list.length} moments. The best part is that we got to live them.</p>`;finish('📜 The Lost Archives have opened!')}};box.appendChild(next)}})}
+let i=0,score=0;
+
+area.innerHTML=`
+<p class="game-copy">${title}</p>
+<div class="game-box">
+<div class="score" id="quizCount"></div>
+<div class="question" id="quizQuestion"></div>
+<div id="quizOptions"></div>
+<p class="feedback" id="quizFeedback"></p>
+</div>`;
+
+function show(){
+let q=list[i];
+
+document.getElementById('quizCount').textContent=
+`MEMORY ${i+1} OF ${list.length}`;
+
+document.getElementById('quizQuestion').textContent=q.q;
+document.getElementById('quizFeedback').textContent='';
+
+let box=document.getElementById('quizOptions');
+box.innerHTML='';
+
+q.a.forEach((v,n)=>{
+let b=document.createElement('button');
+b.className='game-btn';
+b.textContent=v;
+
+b.onclick=()=>{
+if(box.dataset.answered)return;
+box.dataset.answered='1';
+
+if(n===q.c){
+score++;
+document.getElementById('quizFeedback').textContent='✓ '+q.why;
+}else{
+document.getElementById('quizFeedback').textContent='Not quite! '+q.why;
+}
+
+let next=document.createElement('button');
+next.className='primary';
+next.textContent=i===list.length-1?'Finish':'Next memory';
+
+next.onclick=()=>{
+i++;
+if(i<list.length){
+show();
+}else{
+area.innerHTML=`
+<h3>Memory keeper</h3>
+<p class="game-copy">
+You remembered ${score} out of ${list.length} moments.
+The best part is that we got to live them.
+</p>`;
+finish('📜 The Lost Archives have opened!');
+}
+};
+
+box.appendChild(next);
+};
+
+box.appendChild(b);
+});
+}
+
 show();
 }
 function archivesGame(area){quiz(area,memories,'Some moments are written in books. Ours are written in memory. How many do you remember?')}

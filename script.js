@@ -103,15 +103,13 @@ area.innerHTML=`
 
 function show(){
 let q=list[i];
-
-document.getElementById('quizCount').textContent=
-`MEMORY ${i+1} OF ${list.length}`;
-
+document.getElementById('quizCount').textContent=`MEMORY ${i+1} OF ${list.length}`;
 document.getElementById('quizQuestion').textContent=q.q;
 document.getElementById('quizFeedback').textContent='';
 
 let box=document.getElementById('quizOptions');
 box.innerHTML='';
+box.dataset.answered='';
 
 q.a.forEach((v,n)=>{
 let b=document.createElement('button');
@@ -138,12 +136,8 @@ i++;
 if(i<list.length){
 show();
 }else{
-area.innerHTML=`
-<h3>Memory keeper</h3>
-<p class="game-copy">
-You remembered ${score} out of ${list.length} moments.
-The best part is that we got to live them.
-</p>`;
+area.innerHTML=`<h3>Memory keeper</h3>
+<p class="game-copy">You remembered ${score} out of ${list.length} moments. The best part is that we got to live them.</p>`;
 finish('📜 The Lost Archives have opened!');
 }
 };
